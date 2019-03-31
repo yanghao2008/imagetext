@@ -1,0 +1,46 @@
+<html>
+<body>
+<div class="page_title2">
+<div class="container">
+<br>
+<br>
+    <div class="title"><h1>资料库</h1></div>
+    
+</div>
+</div><!-- end page title -->  
+<div class="clearfix"></div>
+
+<div class="container">
+
+	<div class="content_fullwidth">
+        <table border="1">
+            <thead>
+                <tr>
+                    <td><b>图</b></td>
+                    <td><b>文</b></td>
+                </tr>
+           </thead>
+           <tbody>
+                {% autoescape off %}
+                {{copyright}}<br>
+                <tr>
+                    <td><img id="show" src="data:image/png;base64,{{ base64_data }}" onload="if(this.width >= 800){this.width = 800}"/></td>
+                <form action="books_view.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="key_Id" value="{{ before }}" />
+                {% csrf_token %}
+                <input type="submit" value="上一页" />
+                </form>
+                <form action="books_view.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="key_Id" value="{{ next }}" />
+                {% csrf_token %}
+                <input type="submit" value="下一页" />
+                </form>
+                    <td>{{ textcontent }}</td>
+                </tr>
+                {% endautoescape %}
+                </tbody>
+        </table>
+</div> <!--end content area -->
+</div>
+</body>
+</html>

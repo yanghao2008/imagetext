@@ -1,0 +1,109 @@
+<html>
+<body>
+<div class="page_title2">
+<div class="container">
+<br>
+<br>
+    <div class="title"><h1>资料库</h1></div>
+    
+    
+</div>
+</div><!-- end page title -->  
+<div class="clearfix"></div>
+
+<div class="container">
+
+	<div class="content_fullwidth">
+    <form action="index.html" method="post">
+        {% csrf_token %}   <!--加入这行 -->
+        检索：<input type="text" name="query_str" style="height:20px;width:300px;" value="{{ query_str }}"/><br />
+        书名：<input type="text" name="bookname" style="height:20px;width:200px;" value="{{ bookname }}"/><br />
+        <br>
+        <input type="submit" value="查询" />
+    </form>
+    <hr/>
+{{ returninfo }}
+<div class="pagination">
+    <span class="step-links">
+        {% if imagetext.has_other_pages %}
+        <span class="current">
+            {{ imagetext.number }} / {{ imagetext.paginator.num_pages }} 
+        </span>
+        <form action="index.html" method="post" style="margin:0px;display:inline;">
+        <input type="text" name="page" style="height:25px;width:50px;"/>
+        <input type="hidden" name="query_str" value="{{ query_str }}" />
+        <input type="hidden" name="bookname" value="{{ bookname }}" />
+        {% csrf_token %}
+        <input type="submit" value="跳转" />
+        </form>
+        {% endif %}
+        {% if imagetext.has_previous %}
+                <form action="index.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="page" value="{{ imagetext.previous_page_number }}" />
+                <input type="hidden" name="query_str" value="{{ query_str }}" />
+                <input type="hidden" name="bookname" value="{{ bookname }}" />
+                {% csrf_token %}
+                <input type="submit" value="上一页" />
+                </form>
+        {% endif %}
+        {% if imagetext.has_next %}
+                <form action="index.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="page" value="{{ imagetext.next_page_number }}" />
+                <input type="hidden" name="query_str" value="{{ query_str }}" />
+                <input type="hidden" name="bookname" value="{{ bookname }}" />
+                {% csrf_token %}
+                <input type="submit" value="下一页" />
+                </form>
+        {% endif %}
+    </span>
+</div>
+                {% autoescape off %}
+                {% for item in imagetext %}
+                    <div>
+                    <form action="books_view.html" method="post" style="margin:0px;display:inline;" target="_blank">
+                    <input type="hidden" name="key_Id" value="{{ item.id }}" />
+                    {% csrf_token %}
+                    <input type="submit" value="浏览"/>
+                    </form>
+                     - {{ item.text }}<br><br>
+                    </div>
+                {% endfor %}
+                {% endautoescape %}
+<div class="pagination">
+    <span class="step-links">
+        {% if imagetext.has_other_pages %}
+        <span class="current">
+            {{ imagetext.number }} / {{ imagetext.paginator.num_pages }} 
+        </span>
+        <form action="index.html" method="post" style="margin:0px;display:inline;">
+        <input type="text" name="page" style="height:25px;width:50px;"/>
+        <input type="hidden" name="query_str" value="{{ query_str }}" />
+        <input type="hidden" name="bookname" value="{{ bookname }}" />
+        {% csrf_token %}
+        <input type="submit" value="跳转" />
+        </form>
+        {% endif %}
+        {% if imagetext.has_previous %}
+                <form action="index.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="page" value="{{ imagetext.previous_page_number }}" />
+                <input type="hidden" name="query_str" value="{{ query_str }}" />
+                <input type="hidden" name="bookname" value="{{ bookname }}" />
+                {% csrf_token %}
+                <input type="submit" value="上一页" />
+                </form>
+        {% endif %}
+        {% if imagetext.has_next %}
+                <form action="index.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="page" value="{{ imagetext.next_page_number }}" />
+                <input type="hidden" name="query_str" value="{{ query_str }}" />
+                <input type="hidden" name="bookname" value="{{ bookname }}" />
+                {% csrf_token %}
+                <input type="submit" value="下一页" />
+                </form>
+        {% endif %}
+    </span>
+</div>
+</div><!-- end content area -->
+</div>
+</body>
+</html>
