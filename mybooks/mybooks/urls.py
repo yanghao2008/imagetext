@@ -18,7 +18,8 @@ from django.urls import path
 from books import books_views
 
 urlpatterns = [
-    path('/', books_views.search),
+    path('', books_views.search),
     path('index.html', books_views.search),
     path('books_view.html', books_views.view),
+    path('books_edit.html', books_views.edit),
 ]

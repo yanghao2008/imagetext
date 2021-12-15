@@ -80,3 +80,54 @@ def view(request):
         copyright=getleginfo(BKname,imagetext.page)
     return render(request, 'books_view.html', {'copyright':copyright,'base64_data':str(base64_data,'utf-8'),'imagetext': imagetext,'textcontent':textcontent,'before':int(key_Id)-1,'next':int(key_Id)+1})
 
+
+def removeBom(file):
+    '''移除UTF-8文件的BOM字节'''
+    BOM = b'\xef\xbb\xbf'
+    existBom = lambda s: True if s == BOM else False
+ 
+    f = open(file, 'rb')
+    if existBom(f.read(3)):
+        fbody = f.read()
+        # f.close()
+        with open(file, 'wb') as f:
+            f.write(fbody)
+
+def edit(request):
+    if request.method == 'POST':
+        textarea = request.POST.get('textarea')
+        key_Id = request.POST.get('key_Id')
+        if textarea != None:
+            formerImageText=models.BooksImageText.objects.get(id=str(int(key_Id)-1))
+            formertext=''
+            #取上一条记录的后30字
+            text=re.sub('<.+?>','',formerImageText.text)
+            text=text.strip().replace('\t','').replace('\r','').replace('\n','').replace(' ','').replace(' ','')
+            if len(text) > 30:
+                formertext=text[-30:]
+            else:
+                formertext=text
+            #两条记录去除html标记后存入text供检索
+            current_text=re.sub('<.+?>','',textarea)
+            current_text=current_text.strip().replace('\t','').replace('\r','').replace('\n','').replace(' ','').replace(' ','')
+            models.BooksImageText.objects.filter(id=key_Id).update(text=formertext+current_text)
+            #用新获取的textarea数据更新底层txt文件，要删去多余的换行
+            imagetext = models.BooksImageText.objects.get(id=key_Id)
+            removeBom(imagetext.txt)
+            with open(imagetext.txt,'w',encoding='UTF-8') as txtfile:
+                txtfile.write('%s' % (textarea.replace('\n','')))
+        #textarea不存在，不是保存，而是获取textarea
+        imagetext = models.BooksImageText.objects.get(id=key_Id)
+        if os.path.exists(imagetext.txt):
+            removeBom(imagetext.txt)
+            with open(imagetext.txt,'r',encoding='UTF-8') as txtfile:
+                textcontent=txtfile.read()
+        
+        img = Image.open(imagetext.image)
+        output_buffer = BytesIO() 
+        img.save(output_buffer, format='png') 
+        byte_data = output_buffer.getvalue() 
+        base64_data = base64.b64encode(byte_data)
+        BKname=models.Info.objects.get(book_id=imagetext.book_id)
+        copyright=getleginfo(BKname,imagetext.page)
+    return render(request, 'books_edit.html', {'copyright':copyright,'base64_data':str(base64_data,'utf-8'),'imagetext': imagetext,'textcontent':textcontent,'before':int(key_Id)-1,'next':int(key_Id)+1})
