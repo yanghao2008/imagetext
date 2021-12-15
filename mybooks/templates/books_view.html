@@ -25,6 +25,11 @@
                 {{copyright}}<br>
                 <tr>
                     <td><img id="show" src="data:image/png;base64,{{ base64_data }}" onload="if(this.width >= 800){this.width = 800}"/></td>
+                <form action="books_edit.html" method="post" style="margin:0px;display:inline;">
+                <input type="hidden" name="key_Id" value="{{ imagetext.id }}" />
+                {% csrf_token %}
+                <input type="submit" value="修改" />
+                </form>
                 <form action="books_view.html" method="post" style="margin:0px;display:inline;">
                 <input type="hidden" name="key_Id" value="{{ before }}" />
                 {% csrf_token %}
